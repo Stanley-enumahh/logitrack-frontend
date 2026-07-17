@@ -1,0 +1,6 @@
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/mona-sans@5/index.min.css");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Mona Sans Variable", sans-serif;
+}
