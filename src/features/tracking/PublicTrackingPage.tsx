@@ -139,7 +139,7 @@ export default function PublicTrackingPage() {
             </div>
             {data.proof_of_delivery.photo && (
               <img
-                src={`http://127.0.0.1:8000${data.proof_of_delivery.photo}`}
+                src={data.proof_of_delivery.photo}
                 alt="Proof of delivery"
                 className="w-full rounded-md border border-slate-200 mb-2"
               />
