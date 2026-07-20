@@ -30,6 +30,12 @@ const TABS: Tab[] = [
     statuses: ["picked_up", "en_route"],
   },
   {
+    key: "awaiting",
+    label: "Awaiting Confirmation",
+    dotColor: "#9333EA",
+    statuses: ["awaiting_confirmation"],
+  },
+  {
     key: "completed",
     label: "Completed",
     dotColor: "#00A979",
@@ -39,7 +45,7 @@ const TABS: Tab[] = [
     key: "issues",
     label: "Issues",
     dotColor: "#F82019",
-    statuses: ["failed", "cancelled"],
+    statuses: ["failed", "cancelled", "disputed"],
   },
 ];
 

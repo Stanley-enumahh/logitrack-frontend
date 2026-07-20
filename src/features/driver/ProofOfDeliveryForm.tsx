@@ -38,7 +38,32 @@ export default function ProofOfDeliveryForm({
       queryClient.invalidateQueries({ queryKey: ["order-events", orderId] });
       onSuccess();
     },
-    onError: (err: Error) => setError(err.message ?? "Something went wrong."),
+    onError: (err: unknown) => {
+      const axiosError = err as {
+        response?: {
+          status?: number;
+          data?: Record<string, string[] | string>;
+        };
+      };
+
+      if (axiosError.response?.status === 429) {
+        setError("Too many attempts. Please wait a moment and try again.");
+        return;
+      }
+
+      const data = axiosError.response?.data;
+      if (data) {
+        // DRF validation errors come back as { field_name: ["message"] } or { non_field_errors: [...] }
+        const firstError = Object.values(data)[0];
+        const message = Array.isArray(firstError) ? firstError[0] : firstError;
+        setError(
+          typeof message === "string" ? message : "Something went wrong.",
+        );
+        return;
+      }
+
+      setError("Something went wrong.");
+    },
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +109,7 @@ export default function ProofOfDeliveryForm({
               )}
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp"
                 capture="environment"
                 className="hidden"
                 onChange={handleFileChange}
@@ -94,11 +119,12 @@ export default function ProofOfDeliveryForm({
 
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1">
-              Recipient name (optional)
+              Recipient name
             </label>
             <input
               value={recipientName}
               onChange={(e) => setRecipientName(e.target.value)}
+              required
               className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
@@ -111,8 +137,8 @@ export default function ProofOfDeliveryForm({
 
           <button
             onClick={() => mutation.mutate()}
-            disabled={!photo || mutation.isPending}
-            className="w-full bg-slate-900 text-white text-sm font-medium py-2.5 rounded-md hover:bg-slate-800 disabled:opacity-50"
+            disabled={!photo || !recipientName.trim() || mutation.isPending}
+            className="w-full bg-slate-900 text-white text-sm font-medium py-2.5 cursor-pointer rounded-md hover:bg-slate-800 disabled:opacity-50"
           >
             {mutation.isPending ? "Submitting..." : "Confirm delivery"}
           </button>

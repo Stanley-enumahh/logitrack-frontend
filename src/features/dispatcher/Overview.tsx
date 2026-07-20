@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import {
   FiPackage,
   FiClock,
-  FiTruck,
   FiCheckCircle,
   FiAlertCircle,
 } from "react-icons/fi";
@@ -49,10 +48,10 @@ export default function Overview({ onOrderClick }: OverviewProps) {
       color: "#E49E22", // amber
     },
     {
-      label: "In transit",
-      value: overview?.stats.active,
-      icon: FiTruck,
-      color: "#6C61EB", // purple
+      label: "Disputed",
+      value: overview?.stats.disputed,
+      icon: FiAlertCircle,
+      color: "#F82019",
     },
     {
       label: "Delivered today",

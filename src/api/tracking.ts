@@ -22,6 +22,12 @@ export interface SubmitPodPayload {
   longitude: number;
 }
 
+export interface ConfirmDeliveryPayload {
+  confirmed: boolean;
+  confirmed_by_name: string;
+  dispute_reason?: string;
+}
+
 export async function fetchOrderEvents(
   orderId: number,
 ): Promise<InternalStatusEvent[]> {
@@ -56,6 +62,17 @@ export async function fetchPublicTracking(
 ): Promise<PublicTrackingData> {
   const { data } = await apiClient.get<PublicTrackingData>(
     `/tracking/public/${trackingToken}/`,
+  );
+  return data;
+}
+
+export async function confirmDelivery(
+  trackingToken: string,
+  payload: ConfirmDeliveryPayload,
+) {
+  const { data } = await apiClient.post(
+    `/tracking/confirm-delivery/${trackingToken}/`,
+    payload,
   );
   return data;
 }

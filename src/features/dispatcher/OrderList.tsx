@@ -22,7 +22,9 @@ const FILTER_TABS: { label: string; value: OrderStatus | "all" }[] = [
   { label: "All", value: "all" },
   { label: "Pending", value: "pending" },
   { label: "En Route", value: "en_route" },
+  { label: "Awaiting Confirmation", value: "awaiting_confirmation" },
   { label: "Delivered", value: "delivered" },
+  { label: "Disputed", value: "disputed" },
 ];
 
 export default function OrderList({ onOrderClick }: OrderListProps) {
@@ -30,28 +32,27 @@ export default function OrderList({ onOrderClick }: OrderListProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const PAGE_SIZE = 15; // must match backend PAGE_SIZE
+  const PAGE_SIZE = 15;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["orders", page],
-    queryFn: () => fetchOrders(page),
-    refetchInterval: 10000,
+    queryKey: ["orders", page, filter],
+    queryFn: () => fetchOrders(page, filter),
   });
 
   const orders = data?.results;
 
-  const filtered = orders
-    ?.filter((o) => filter === "all" || o.status === filter)
-    .filter(
-      (o) =>
-        !search ||
-        o.customer_name.toLowerCase().includes(search.toLowerCase()) ||
-        o.order_number.toLowerCase().includes(search.toLowerCase()),
-    );
+  // Search stays client-side (only searches within the current page/filter) —
+  // a full search-across-all-orders would need a backend search param too
+  const filtered = orders?.filter(
+    (o) =>
+      !search ||
+      o.customer_name.toLowerCase().includes(search.toLowerCase()) ||
+      o.order_number.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <div className="px-4 space-y-4">
-      {/* Header with dot-grid decoration */}
+      {/* Header */}
       <div className="b border-b  border-slate-100">
         <h1 className="text-2xl font-semibold text-slate-900">Orders</h1>
         <p className="text-slate-500 text-sm mt-1">
@@ -71,12 +72,15 @@ export default function OrderList({ onOrderClick }: OrderListProps) {
             />
           </div>
 
-          <div className="flex items-center bg-white/20 border border-gray-200 rounded-lg p-[4px] w-fit">
+          <div className="flex items-center flex-wrap gap-1 bg-white/20 border border-gray-200 rounded-lg p-1 w-full sm:w-fit">
             {FILTER_TABS.map((tab) => (
               <button
                 key={tab.value}
-                onClick={() => setFilter(tab.value)}
-                className={`px-3 py-1 rounded-md text-[11px] font-medium transition-colors ${
+                onClick={() => {
+                  setFilter(tab.value);
+                  setPage(1);
+                }}
+                className={`px-3 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors ${
                   filter === tab.value
                     ? "bg-black text-white"
                     : "text-slate-500 hover:text-slate-700"
@@ -194,17 +198,17 @@ export default function OrderList({ onOrderClick }: OrderListProps) {
                       </TableCell>
                     </TableRow>
                   ))}
-
-                  {data && (
-                    <Pagination
-                      page={page}
-                      totalCount={data.count}
-                      pageSize={PAGE_SIZE}
-                      onPageChange={setPage}
-                    />
-                  )}
                 </TableBody>
               </Table>
+
+              {data && (
+                <Pagination
+                  page={page}
+                  totalCount={data.count}
+                  pageSize={PAGE_SIZE}
+                  onPageChange={setPage}
+                />
+              )}
             </div>
           </>
         )}

@@ -5,7 +5,9 @@ const STATUS_LABELS: Record<string, string> = {
   assigned: "Driver assigned",
   picked_up: "Picked up",
   en_route: "En route",
-  delivered: "Delivered",
+  awaiting_confirmation: "Delivered — awaiting confirmation",
+  delivered: "Delivery confirmed",
+  disputed: "Delivery disputed",
   failed: "Delivery failed",
   cancelled: "Cancelled",
 };

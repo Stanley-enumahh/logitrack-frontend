@@ -79,7 +79,7 @@ export default function NotificationBell() {
     <div ref={containerRef} className="relative">
       <button
         onClick={() => setIsOpen((v) => !v)}
-        className="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 relative"
+        className="w-9 h-9 flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 relative"
       >
         <FiBell className="w-4 h-4" />
         {unreadCount > 0 && (

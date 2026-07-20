@@ -52,7 +52,9 @@ export interface DispatcherStats {
   total_today: number;
   pending: number;
   active: number;
+  awaiting_confirmation: number;
   delivered_today: number;
+  disputed: number;
   urgent: number;
 }
 
@@ -63,9 +65,14 @@ export interface OverviewResponse {
 
 export async function fetchOrders(
   page: number = 1,
+  status?: string,
 ): Promise<PaginatedResponse<Order>> {
+  const params: Record<string, string | number> = { page };
+  if (status && status !== "all") {
+    params.status = status;
+  }
   const { data } = await apiClient.get<PaginatedResponse<Order>>("/orders/", {
-    params: { page },
+    params,
   });
   return data;
 }

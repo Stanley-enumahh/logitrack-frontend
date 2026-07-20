@@ -26,13 +26,15 @@ export interface User {
 }
 
 export type OrderStatus =
-  | "pending"
-  | "assigned"
-  | "picked_up"
-  | "en_route"
-  | "delivered"
-  | "failed"
-  | "cancelled";
+  | 'pending'
+  | 'assigned'
+  | 'picked_up'
+  | 'en_route'
+  | 'awaiting_confirmation'
+  | 'delivered'
+  | 'disputed'
+  | 'failed'
+  | 'cancelled';
 
 export type OrderPriority = "normal" | "urgent";
 
@@ -71,6 +73,10 @@ export interface ProofOfDelivery {
   signature: string | null;
   recipient_name: string;
   captured_at: string;
+  confirmation_status: 'pending' | 'confirmed' | 'disputed';
+  dispute_reason: string;
+  confirmed_by_name: string;
+  confirmed_at: string | null;
 }
 
 export interface PublicTrackingData {
