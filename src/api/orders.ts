@@ -66,14 +66,16 @@ export interface OverviewResponse {
 export async function fetchOrders(
   page: number = 1,
   status?: string,
+  search?: string
 ): Promise<PaginatedResponse<Order>> {
   const params: Record<string, string | number> = { page };
-  if (status && status !== "all") {
+  if (status && status !== 'all') {
     params.status = status;
   }
-  const { data } = await apiClient.get<PaginatedResponse<Order>>("/orders/", {
-    params,
-  });
+  if (search) {
+    params.search = search;
+  }
+  const { data } = await apiClient.get<PaginatedResponse<Order>>('/orders/', { params });
   return data;
 }
 

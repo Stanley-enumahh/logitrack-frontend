@@ -6,6 +6,8 @@ import DispatcherDashboard from "./features/dispatcher/DispatcherDashboard";
 import DriverDashboard from "./features/driver/DriverDashboard";
 import PlaceOrderPage from "./features/order-request/PlaceOrderPage";
 import PublicTrackingPage from "./features/tracking/PublicTrackingPage";
+import VerifyEmailPage from "./features/auth/VerifyEmailPage";
+import AcceptInvitePage from "./features/auth/AcceptInvitePage";
 
 function HomeRoute() {
   const { role } = useAuth();
@@ -19,8 +21,11 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/accept-invite/:token" element={<AcceptInvitePage />} />
+        <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
         <Route path="/place-order" element={<PlaceOrderPage />} />
         <Route path="/track/:token" element={<PublicTrackingPage />} />
+
         <Route
           path="/"
           element={

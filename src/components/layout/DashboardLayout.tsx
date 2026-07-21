@@ -1,7 +1,15 @@
 import { useState, type ReactNode } from "react";
-import { FiTruck, FiLogOut, FiMenu, FiX, FiPlus } from "react-icons/fi";
+import {
+  FiTruck,
+  FiLogOut,
+  FiMenu,
+  FiX,
+  FiPlus,
+  FiUserPlus,
+} from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
 import NotificationBell from "../ui/NotificationBell";
+import ConfirmLogoutModal from "../ui/ConfirmLogoutModal";
 
 interface NavItem {
   label: string;
@@ -16,16 +24,19 @@ interface DashboardLayoutProps {
   navItems: NavItem[];
   onPrimaryAction?: () => void;
   primaryActionLabel?: string;
+  onInviteClick?: () => void;
 }
 
 export default function DashboardLayout({
   children,
   navItems,
   onPrimaryAction,
+  onInviteClick,
   primaryActionLabel = "New",
 }: DashboardLayoutProps) {
   const { username, logout, role } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleNavClick = (onClick: () => void) => {
     onClick();
@@ -106,20 +117,39 @@ export default function DashboardLayout({
         </nav>
 
         <div className="px-3 py-4 border-t border-slate-100 shrink-0">
+          {onInviteClick && (
+            <button
+              onClick={onInviteClick}
+              className="w-full flex items-center gap-2 px-2.5 py-2 mb-1 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50"
+            >
+              <FiUserPlus className="w-4 h-4" />
+              Invite dispatcher
+            </button>
+          )}
           <div className="flex items-center gap-2 px-2.5 py-2 mb-1">
             <div className="w-7 h-7 rounded-full bg-slate-200 flex items-center justify-center text-xs font-semibold text-slate-600 shrink-0">
               {username?.slice(0, 2).toUpperCase()}
             </div>
             <p className="text-sm text-slate-700 truncate flex-1">{username}</p>
             <button
-              onClick={logout}
+              onClick={() => setShowLogoutConfirm(true)}
               className="text-slate-400 hover:text-slate-700"
             >
-              <FiLogOut className="w-4 h-4" />
+              <FiLogOut className="w-4 h-4 text-red-600" />
             </button>
           </div>
         </div>
       </aside>
+
+      {showLogoutConfirm && (
+        <ConfirmLogoutModal
+          onConfirm={() => {
+            logout();
+            setShowLogoutConfirm(false);
+          }}
+          onCancel={() => setShowLogoutConfirm(false)}
+        />
+      )}
 
       <div className="flex-1 h-full flex flex-col overflow-hidden">
         {/* Top bar */}

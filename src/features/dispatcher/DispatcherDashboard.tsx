@@ -7,6 +7,7 @@ import CreateOrderForm from "./CreateOrderForm";
 import OrderDetail from "./OrderDetail";
 import DriverList from "./DriverList";
 import CreateDriverForm from "./CreateDriverForm";
+import InviteDispatcherForm from "./InviteDispatcherForm";
 import { fetchOrders } from "../../api/orders";
 import { fetchDriverList } from "../../api/auth";
 import Overview from "./Overview";
@@ -16,6 +17,7 @@ export default function DispatcherDashboard() {
   const [showCreateOrderForm, setShowCreateOrderForm] = useState(false);
   const [showCreateDriverForm, setShowCreateDriverForm] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [showInviteForm, setShowInviteForm] = useState(false);
 
   const { data: orders } = useQuery({
     queryKey: ["orders", 1],
@@ -60,6 +62,7 @@ export default function DispatcherDashboard() {
             : undefined
       }
       primaryActionLabel={activeTab === "orders" ? "New Order" : "New Driver"}
+      onInviteClick={() => setShowInviteForm(true)}
     >
       {activeTab === "overview" && (
         <Overview onOrderClick={(id) => setSelectedOrderId(id)} />
@@ -76,6 +79,9 @@ export default function DispatcherDashboard() {
       )}
       {showCreateDriverForm && (
         <CreateDriverForm onClose={() => setShowCreateDriverForm(false)} />
+      )}
+      {showInviteForm && (
+        <InviteDispatcherForm onClose={() => setShowInviteForm(false)} />
       )}
       {selectedOrderId && (
         <OrderDetail

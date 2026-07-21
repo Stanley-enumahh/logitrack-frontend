@@ -13,6 +13,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import Pagination from "../../components/ui/Pagination";
+import { useDebounce } from "../../hooks/useDebounce";
 
 interface OrderListProps {
   onOrderClick: (orderId: number) => void;
@@ -31,24 +32,16 @@ export default function OrderList({ onOrderClick }: OrderListProps) {
   const [filter, setFilter] = useState<OrderStatus | "all">("all");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const debouncedSearch = useDebounce(search, 400);
 
   const PAGE_SIZE = 15;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["orders", page, filter],
-    queryFn: () => fetchOrders(page, filter),
+    queryKey: ["orders", page, filter, debouncedSearch],
+    queryFn: () => fetchOrders(page, filter, debouncedSearch),
   });
 
   const orders = data?.results;
-
-  // Search stays client-side (only searches within the current page/filter) —
-  // a full search-across-all-orders would need a backend search param too
-  const filtered = orders?.filter(
-    (o) =>
-      !search ||
-      o.customer_name.toLowerCase().includes(search.toLowerCase()) ||
-      o.order_number.toLowerCase().includes(search.toLowerCase()),
-  );
 
   return (
     <div className="px-4 space-y-4">
@@ -66,7 +59,10 @@ export default function OrderList({ onOrderClick }: OrderListProps) {
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
             <input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder="Search orders or customers"
               className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-transparent"
             />
@@ -99,17 +95,17 @@ export default function OrderList({ onOrderClick }: OrderListProps) {
           <p className="text-red-600 text-sm">Couldn't load orders.</p>
         )}
 
-        {filtered && filtered.length === 0 && (
+        {orders && orders.length === 0 && (
           <div className="text-center py-16 border border-dashed border-slate-200 rounded-lg">
             <p className="text-slate-500 text-sm">No orders match this view.</p>
           </div>
         )}
 
-        {filtered && filtered.length > 0 && (
+        {orders && orders.length > 0 && (
           <>
             {/* Mobile cards */}
             <div className="md:hidden space-y-3">
-              {filtered.map((order) => (
+              {orders.map((order) => (
                 <div
                   key={order.id}
                   onClick={() => onOrderClick(order.id)}
@@ -160,7 +156,7 @@ export default function OrderList({ onOrderClick }: OrderListProps) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((order) => (
+                  {orders.map((order) => (
                     <TableRow
                       key={order.id}
                       onClick={() => onOrderClick(order.id)}
