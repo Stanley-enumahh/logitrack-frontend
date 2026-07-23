@@ -6,35 +6,22 @@ import { useMutation } from "@tanstack/react-query";
 import { FiTruck, FiCheckCircle, FiCopy } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { createPublicOrder, type PublicOrderPayload } from "../../api/orders";
+import AddressAutocomplete from "../../components/ui/AddressAutocomplete";
+import type { GeocodeResult } from "../../api/geocoding";
 
 const schema = yup.object({
   customer_name: yup.string().required("Required"),
   customer_phone: yup.string().required("Required"),
   customer_email: yup.string().email("Invalid email").required("Required"),
-  pickup_address: yup.string().required("Required"),
-  pickup_latitude: yup
-    .number()
-    .required("Required")
-    .typeError("Must be a number"),
-  pickup_longitude: yup
-    .number()
-    .required("Required")
-    .typeError("Must be a number"),
-  dropoff_address: yup.string().required("Required"),
-  dropoff_latitude: yup
-    .number()
-    .required("Required")
-    .typeError("Must be a number"),
-  dropoff_longitude: yup
-    .number()
-    .required("Required")
-    .typeError("Must be a number"),
   delivery_notes: yup.string().default(""),
 });
 
 type FormValues = yup.InferType<typeof schema>;
 
 export default function PlaceOrderPage() {
+  const [pickup, setPickup] = useState<GeocodeResult | null>(null);
+  const [dropoff, setDropoff] = useState<GeocodeResult | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [result, setResult] = useState<{
     order_number: string;
     tracking_token: string;
@@ -56,11 +43,29 @@ export default function PlaceOrderPage() {
         tracking_token: data.tracking_token,
       });
       reset();
+      setPickup(null);
+      setDropoff(null);
     },
   });
 
   const onSubmit = (values: FormValues) => {
-    mutation.mutate(values as PublicOrderPayload);
+    if (!pickup || !dropoff) {
+      setLocationError(
+        "Please select both a pickup and dropoff address from the suggestions.",
+      );
+      return;
+    }
+    setLocationError(null);
+
+    mutation.mutate({
+      ...values,
+      pickup_address: pickup.address,
+      pickup_latitude: pickup.latitude,
+      pickup_longitude: pickup.longitude,
+      dropoff_address: dropoff.address,
+      dropoff_latitude: dropoff.latitude,
+      dropoff_longitude: dropoff.longitude,
+    });
   };
 
   const trackingUrl = result
@@ -182,63 +187,30 @@ export default function PlaceOrderPage() {
             </div>
 
             <div className="border-t border-slate-100 pt-4">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
                 Pickup
-              </p>
-              <input
-                {...register("pickup_address")}
-                placeholder="Address"
-                className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              </label>
+              <AddressAutocomplete
+                placeholder="Search pickup address"
+                onSelect={setPickup}
               />
-              {errors.pickup_address && (
-                <p className="text-red-600 text-xs mb-2">
-                  {errors.pickup_address.message}
-                </p>
-              )}
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  {...register("pickup_latitude")}
-                  placeholder="Latitude"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
-                <input
-                  {...register("pickup_longitude")}
-                  placeholder="Longitude"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Address autocomplete coming soon — enter coordinates for now.
-              </p>
             </div>
 
             <div className="border-t border-slate-100 pt-4">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
                 Dropoff
-              </p>
-              <input
-                {...register("dropoff_address")}
-                placeholder="Address"
-                className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              </label>
+              <AddressAutocomplete
+                placeholder="Search dropoff address"
+                onSelect={setDropoff}
               />
-              {errors.dropoff_address && (
-                <p className="text-red-600 text-xs mb-2">
-                  {errors.dropoff_address.message}
-                </p>
-              )}
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  {...register("dropoff_latitude")}
-                  placeholder="Latitude"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
-                <input
-                  {...register("dropoff_longitude")}
-                  placeholder="Longitude"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
             </div>
+
+            {locationError && (
+              <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                {locationError}
+              </p>
+            )}
 
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1">
@@ -260,7 +232,7 @@ export default function PlaceOrderPage() {
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="w-full bg-slate-900 text-white text-sm font-medium py-2.5 rounded-md hover:bg-slate-800 disabled:opacity-50"
+              className="w-full bg-slate-900 text-white cursor-pointer text-sm font-medium py-2.5 rounded-md hover:bg-slate-800 disabled:opacity-50"
             >
               {mutation.isPending ? "Placing order..." : "Place order"}
             </button>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
 import {
   FiTruck,
@@ -7,12 +7,11 @@ import {
   FiCamera,
   FiCheckCircle,
   FiClock,
-  FiArrowRight,
   FiSearch,
   FiPackage,
 } from "react-icons/fi";
 import Navbar from "../../components/layout/Navbar";
-import img from "@/assets/37261615_container_2-removebg-preview.png";
+import { Hero } from "./Hero";
 
 const fadeUp: Variants = {
   hidden: {
@@ -48,92 +47,7 @@ export default function LandingPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative px-6 md:px-10 pt-16 pb-26 text-center overflow-hidden">
-        <motion.div
-          className="max-w-2xl mx-auto relative z-10"
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.h1
-            custom={0}
-            variants={fadeUp}
-            className="text-4xl md:text-6xl font-semibold text-slate-900 tracking-tight leading-tight"
-          >
-            Know exactly where your delivery is
-          </motion.h1>
-          <motion.p
-            custom={1}
-            variants={fadeUp}
-            className="text-slate-500 text-base md:text-lg mt-5 max-w-lg mx-auto"
-          >
-            Live GPS tracking, photo proof of delivery, and confirmation from
-            you — not just the driver's word. From pickup to your door.
-          </motion.p>
-
-          <motion.div
-            custom={2}
-            variants={fadeUp}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8"
-          >
-            <Link
-              to="/place-order"
-              className="flex items-center gap-2 bg-slate-900 text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-slate-800 transition-colors"
-            >
-              Send a Package
-              <FiArrowRight className="w-4 h-4" />
-            </Link>
-            <a
-              href="#track"
-              className="flex items-center gap-2 border border-slate-300 text-slate-700 text-sm font-medium px-6 py-3 rounded-full hover:bg-slate-50 transition-colors"
-            >
-              Track a Delivery
-            </a>
-          </motion.div>
-        </motion.div>
-
-        {/* Floating product visuals */}
-        <motion.div
-          initial={{ opacity: 0, x: -30, rotate: -8 }}
-          animate={{ opacity: 1, x: 0, rotate: -4 }}
-          transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-          className="hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 w-64 bg-white border border-slate-200 rounded-xl shadow-lg p-4"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-mono text-xs text-slate-500">
-              ORD-4F9A2B1C
-            </span>
-            <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-800">
-              En Route
-            </span>
-          </div>
-          <div className="h-24 rounded-lg bg-slate-50 relative overflow-hidden">
-            <svg viewBox="0 0 200 100" className="w-full h-full">
-              <line
-                x1="20"
-                y1="80"
-                x2="170"
-                y2="20"
-                stroke="#94A3B8"
-                strokeWidth="2"
-                strokeDasharray="4 3"
-              />
-              <circle cx="20" cy="80" r="5" fill="#D97706" />
-              <circle cx="170" cy="20" r="5" fill="#059669" />
-              <circle cx="95" cy="50" r="5" fill="#1E293B" />
-            </svg>
-          </div>
-          <p className="text-xs text-slate-400 mt-2">Driver is on the move</p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 30, rotate: 30 }}
-          animate={{ opacity: 1, x: 0, rotate: 25 }}
-          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-          className="hidden lg:block absolute -right-27.5 top-12.5 w-100 hover:-rotate-3 transition-all duration-400"
-        >
-          <img src={img} alt="" />
-        </motion.div>
-      </section>
+      <Hero />
 
       {/* Trust stats row */}
       <motion.section
@@ -311,12 +225,6 @@ export default function LandingPage() {
             <FiTruck className="text-slate-400 w-4 h-4" />
             <span className="text-sm text-slate-500">LogiTrack</span>
           </div>
-          <Link
-            to="/login"
-            className="text-xs text-slate-400 hover:text-slate-600"
-          >
-            Dispatcher &amp; driver login
-          </Link>
         </div>
       </footer>
     </div>
