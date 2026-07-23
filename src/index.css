@@ -1,6 +1,8 @@
 @import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/mona-sans@5/index.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap");
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Mona Sans Variable", sans-serif;
+  --font-grotesk: "Host Grotesk", sans-serif;
 }

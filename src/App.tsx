@@ -8,6 +8,7 @@ import PlaceOrderPage from "./features/order-request/PlaceOrderPage";
 import PublicTrackingPage from "./features/tracking/PublicTrackingPage";
 import VerifyEmailPage from "./features/auth/VerifyEmailPage";
 import AcceptInvitePage from "./features/auth/AcceptInvitePage";
+import LandingPage from "./features/landing/LandingPage";
 
 function HomeRoute() {
   const { role } = useAuth();
@@ -20,6 +21,7 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/accept-invite/:token" element={<AcceptInvitePage />} />
         <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
@@ -27,7 +29,7 @@ function App() {
         <Route path="/track/:token" element={<PublicTrackingPage />} />
 
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <HomeRoute />

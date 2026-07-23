@@ -30,7 +30,7 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       await login(values);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       const axiosError = err as {
         response?: { status?: number; data?: { detail?: string[] | string } };
