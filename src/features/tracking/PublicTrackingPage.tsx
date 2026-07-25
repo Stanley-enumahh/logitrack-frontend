@@ -16,7 +16,7 @@ import {
 } from "../../api/tracking";
 import StatusBadge from "../../components/ui/StatusBadge";
 import PublicTimeline from "../../components/ui/PublicTimeline";
-import MapView from "../../components/ui/MapView";
+import { Footer } from "@/components/ui/Footer";
 
 const ACTIVE_STATUSES = ["assigned", "picked_up", "en_route"];
 
@@ -97,35 +97,10 @@ export default function PublicTrackingPage() {
 
   const isActive = ACTIVE_STATUSES.includes(data.status);
 
-  const mapMarkers = [
-    {
-      latitude: parseFloat(data.pickup_latitude),
-      longitude: parseFloat(data.pickup_longitude),
-      color: "#D97706",
-      label: data.pickup_address,
-    },
-    {
-      latitude: parseFloat(data.dropoff_latitude),
-      longitude: parseFloat(data.dropoff_longitude),
-      color: "#059669",
-      label: data.dropoff_address,
-    },
-    ...(isActive && data.driver_location
-      ? [
-          {
-            latitude: parseFloat(data.driver_location.latitude),
-            longitude: parseFloat(data.driver_location.longitude),
-            color: "#1E293B",
-            label: "Driver",
-          },
-        ]
-      : []),
-  ];
-
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="bg-slate-900 px-4 py-5">
-        <div className="max-w-lg mx-auto flex items-center gap-2">
+        <div className="max-w-5xl mx-auto flex items-center gap-2">
           <FiTruck className="text-amber-500 w-5 h-5" />
           <span className="text-white font-semibold tracking-tight">
             LogiTrack
@@ -162,17 +137,14 @@ export default function PublicTrackingPage() {
           </div>
         )}
 
-        <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-          <MapView markers={mapMarkers} />
-          <div className="p-5 space-y-3">
-            <div className="flex items-start gap-2 text-sm text-slate-700">
-              <FiMapPin className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
-              <span>{data.pickup_address}</span>
-            </div>
-            <div className="flex items-start gap-2 text-sm text-slate-700">
-              <FiMapPin className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-              <span>{data.dropoff_address}</span>
-            </div>
+        <div className="bg-white border border-slate-200 rounded-lg p-5 space-y-3">
+          <div className="flex items-start gap-2 text-sm text-slate-700">
+            <FiMapPin className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+            <span>{data.pickup_address}</span>
+          </div>
+          <div className="flex items-start gap-2 text-sm text-slate-700">
+            <FiMapPin className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+            <span>{data.dropoff_address}</span>
           </div>
         </div>
 
@@ -319,6 +291,8 @@ export default function PublicTrackingPage() {
           </div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }

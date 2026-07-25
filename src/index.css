@@ -6,3 +6,7 @@
   --font-sans: "Mona Sans Variable", sans-serif;
   --font-grotesk: "Host Grotesk", sans-serif;
 }
+
+html {
+  scroll-behavior: smooth;
+}

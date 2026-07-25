@@ -12,6 +12,7 @@ import {
 } from "react-icons/fi";
 import Navbar from "../../components/layout/Navbar";
 import { Hero } from "./Hero";
+import { Footer } from "@/components/ui/Footer";
 
 const fadeUp: Variants = {
   hidden: {
@@ -218,15 +219,7 @@ export default function LandingPage() {
         </form>
       </motion.section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-100 px-6 md:px-10 py-8">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <FiTruck className="text-slate-400 w-4 h-4" />
-            <span className="text-sm text-slate-500">LogiTrack</span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

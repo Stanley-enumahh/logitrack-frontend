@@ -84,13 +84,13 @@ export const Hero = () => {
               <FiArrowRight className="w-4 h-4" />
             </Link>
 
-            <Link
-              to="/track"
+            <a
+              href="#track"
               className="flex w-fit items-center gap-2 rounded-lg border border-white/30 bg-white/10 backdrop-blur-sm px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
             >
               <FiMapPin className="w-4 h-4" />
               Track a Delivery
-            </Link>
+            </a>
           </motion.div>
         </motion.div>
       </div>
