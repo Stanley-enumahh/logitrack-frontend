@@ -1,4 +1,5 @@
 import { FiTruck } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -8,6 +9,10 @@ export const Footer = () => {
           <FiTruck className="text-slate-400 w-4 h-4" />
           <span className="text-sm text-slate-500">LogiTrack</span>
         </div>
+
+        <Link to="/login" className="text-sm text-slate-500">
+          Dispatcher/Driver Login
+        </Link>
       </div>
     </footer>
   );

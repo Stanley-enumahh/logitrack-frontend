@@ -9,6 +9,7 @@ import PublicTrackingPage from "./features/tracking/PublicTrackingPage";
 import VerifyEmailPage from "./features/auth/VerifyEmailPage";
 import AcceptInvitePage from "./features/auth/AcceptInvitePage";
 import LandingPage from "./features/landing/LandingPage";
+import NotFoundPage from "./not-found";
 
 function HomeRoute() {
   const { role } = useAuth();
@@ -27,6 +28,7 @@ function App() {
         <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
         <Route path="/place-order" element={<PlaceOrderPage />} />
         <Route path="/track/:token" element={<PublicTrackingPage />} />
+        <Route path="*" element={<NotFoundPage />} />
 
         <Route
           path="/dashboard"
