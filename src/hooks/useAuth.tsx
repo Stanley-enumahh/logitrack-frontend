@@ -1,12 +1,17 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { login as loginApi, decodeToken, type LoginPayload } from "../api/auth";
+import {
+  login as loginApi,
+  logout as logoutApi,
+  decodeToken,
+  type LoginPayload,
+} from "../api/auth";
 
 interface AuthState {
   isAuthenticated: boolean;
   role: string | null;
   username: string | null;
   login: (payload: LoginPayload) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -30,7 +35,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUsername(decoded.username);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const refresh = localStorage.getItem("refresh_token");
+
+    if (refresh) {
+      try {
+        await logoutApi(refresh);
+      } catch {
+        // Token may already be expired/invalid — proceed with local
+        // cleanup regardless so the user isn't stuck "logged in" on the UI.
+      }
+    }
+
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setRole(null);

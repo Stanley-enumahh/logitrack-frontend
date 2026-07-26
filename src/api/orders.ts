@@ -11,6 +11,8 @@ export interface CreateOrderPayload {
   customer_name: string;
   customer_phone: string;
   customer_email: string;
+  receiver_name: string;
+  receiver_phone: string;
   pickup_address: string;
   pickup_latitude: number;
   pickup_longitude: number;
@@ -32,6 +34,8 @@ export interface PublicOrderPayload {
   customer_name: string;
   customer_phone: string;
   customer_email: string;
+  receiver_name: string;
+  receiver_phone: string;
   pickup_address: string;
   pickup_latitude: number;
   pickup_longitude: number;
@@ -66,16 +70,18 @@ export interface OverviewResponse {
 export async function fetchOrders(
   page: number = 1,
   status?: string,
-  search?: string
+  search?: string,
 ): Promise<PaginatedResponse<Order>> {
   const params: Record<string, string | number> = { page };
-  if (status && status !== 'all') {
+  if (status && status !== "all") {
     params.status = status;
   }
   if (search) {
     params.search = search;
   }
-  const { data } = await apiClient.get<PaginatedResponse<Order>>('/orders/', { params });
+  const { data } = await apiClient.get<PaginatedResponse<Order>>("/orders/", {
+    params,
+  });
   return data;
 }
 
@@ -139,7 +145,6 @@ export async function fetchOverview(): Promise<OverviewResponse> {
   const { data } = await apiClient.get<OverviewResponse>("/orders/overview/");
   return data;
 }
-
 
 export async function cancelOrder(
   orderId: number,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FiClock, FiSearch } from "react-icons/fi";
+import { FiClock, FiPlus, FiSearch } from "react-icons/fi";
 import { fetchOrders } from "../../api/orders";
 import StatusBadge from "../../components/ui/StatusBadge";
 import type { OrderStatus } from "../../types";
@@ -17,6 +17,7 @@ import { useDebounce } from "../../hooks/useDebounce";
 
 interface OrderListProps {
   onOrderClick: (orderId: number) => void;
+  onCreateClick: () => void;
 }
 
 const FILTER_TABS: { label: string; value: OrderStatus | "all" }[] = [
@@ -28,7 +29,10 @@ const FILTER_TABS: { label: string; value: OrderStatus | "all" }[] = [
   { label: "Disputed", value: "disputed" },
 ];
 
-export default function OrderList({ onOrderClick }: OrderListProps) {
+export default function OrderList({
+  onOrderClick,
+  onCreateClick,
+}: OrderListProps) {
   const [filter, setFilter] = useState<OrderStatus | "all">("all");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -46,11 +50,20 @@ export default function OrderList({ onOrderClick }: OrderListProps) {
   return (
     <div className="px-4 space-y-4">
       {/* Header */}
-      <div className="b border-b  border-slate-100">
-        <h1 className="text-2xl font-semibold text-slate-900">Orders</h1>
-        <p className="text-slate-500 text-sm mt-1">
-          {data?.count ?? 0} total &middot; live delivery tracking
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-900">Orders</h1>
+          <p className="text-slate-500 text-sm mt-1">
+            {data?.count ?? 0} total &middot; live delivery tracking
+          </p>
+        </div>
+        <button
+          onClick={onCreateClick}
+          className="flex md:hidden items-center justify-center gap-2 rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+        >
+          <FiPlus className="w-4 h-4" />
+          New Order
+        </button>
       </div>
 
       <div className="px-4 py-6 w-full bg-white rounded-lg">

@@ -16,7 +16,7 @@ import { fetchOrderEvents } from "../../api/tracking";
 import StatusBadge from "../../components/ui/StatusBadge";
 import Timeline from "../../components/ui/Timeline";
 import type { User } from "../../types";
-import ConfirmCancelOrderModal from "@/components/ui/onfirmCancelOrderModal";
+import ConfirmCancelOrderModal from "@/components/ui/ConfirmCancelOrderModal";
 
 interface OrderDetailProps {
   orderId: number;
@@ -156,6 +156,20 @@ export default function OrderDetail({ orderId, onClose }: OrderDetailProps) {
                   {order.customer_email}
                 </div>
               )}
+            </div>
+
+            <div className="border-t border-slate-100 pt-4 space-y-2">
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                Receiver
+              </p>
+              <div className="flex items-center gap-2 text-sm text-slate-700">
+                <FiUser className="w-4 h-4 text-slate-400" />{" "}
+                {order.receiver_name}
+              </div>
+              <div className="flex items-center gap-2 text-sm text-slate-700">
+                <FiPhone className="w-4 h-4 text-slate-400" />{" "}
+                {order.receiver_phone}
+              </div>
             </div>
 
             <div className="border-t border-slate-100 pt-4 space-y-3">

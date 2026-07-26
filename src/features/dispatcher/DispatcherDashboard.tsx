@@ -68,7 +68,10 @@ export default function DispatcherDashboard() {
         <Overview onOrderClick={(id) => setSelectedOrderId(id)} />
       )}
       {activeTab === "orders" && (
-        <OrderList onOrderClick={(id) => setSelectedOrderId(id)} />
+        <OrderList
+          onOrderClick={(id) => setSelectedOrderId(id)}
+          onCreateClick={() => setShowCreateOrderForm(true)}
+        />
       )}
       {activeTab === "drivers" && (
         <DriverList onCreateClick={() => setShowCreateDriverForm(true)} />

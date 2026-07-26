@@ -99,6 +99,20 @@ export default function DriverOrderDetail({
             </div>
           </div>
 
+          <div className="space-y-2 border-t border-slate-100 pt-4">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Receiver
+            </p>
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <FiUser className="w-4 h-4 text-slate-400" />{" "}
+              {order.receiver_name}
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <FiPhone className="w-4 h-4 text-slate-400" />{" "}
+              {order.receiver_phone}
+            </div>
+          </div>
+
           <div className="space-y-3 border-t border-slate-100 pt-4">
             <div className="flex items-start gap-2 text-sm text-slate-700">
               <FiMapPin className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />

@@ -96,13 +96,12 @@ export async function resendVerification(email: string) {
   return data;
 }
 
-
 export interface SendInvitePayload {
   email: string;
 }
 
 export async function sendInvite(payload: SendInvitePayload) {
-  const { data } = await apiClient.post('/auth/invite/', payload);
+  const { data } = await apiClient.post("/auth/invite/", payload);
   return data;
 }
 
@@ -114,6 +113,11 @@ export interface AcceptInvitePayload {
 }
 
 export async function acceptInvite(payload: AcceptInvitePayload) {
-  const { data } = await apiClient.post('/auth/accept-invite/', payload);
+  const { data } = await apiClient.post("/auth/accept-invite/", payload);
+  return data;
+}
+
+export async function logout(refresh: string) {
+  const { data } = await apiClient.post("/auth/logout/", { refresh });
   return data;
 }

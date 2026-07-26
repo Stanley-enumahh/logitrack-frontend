@@ -13,6 +13,8 @@ const schema = yup.object({
   customer_name: yup.string().required("Required"),
   customer_phone: yup.string().required("Required"),
   customer_email: yup.string().email("Invalid email").required("Required"),
+  receiver_name: yup.string().required("Required"),
+  receiver_phone: yup.string().required("Required"),
   delivery_notes: yup.string().default(""),
 });
 
@@ -211,6 +213,37 @@ export default function PlaceOrderPage() {
                 {locationError}
               </p>
             )}
+
+            <div className="border-t border-slate-100 pt-4 grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Receiver name
+                </label>
+                <input
+                  {...register("receiver_name")}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+                {errors.receiver_name && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.receiver_name.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Receiver phone
+                </label>
+                <input
+                  {...register("receiver_phone")}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+                {errors.receiver_phone && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.receiver_phone.message}
+                  </p>
+                )}
+              </div>
+            </div>
 
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1">
