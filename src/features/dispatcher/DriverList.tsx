@@ -3,6 +3,8 @@ import { FiPlus, FiTruck, FiCircle } from "react-icons/fi";
 import { fetchDriverList } from "../../api/auth";
 import { useState } from "react";
 import Pagination from "../../components/ui/Pagination";
+import LoadingState from "@/components/ui/LoadingState";
+import ErrorState from "@/components/ui/ErrorState";
 
 interface DriverListProps {
   onCreateClick: () => void;
@@ -12,7 +14,7 @@ const PAGE_SIZE = 15;
 
 export default function DriverList({ onCreateClick }: DriverListProps) {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["driver-list", page],
     queryFn: () => fetchDriverList(page),
     refetchInterval: 15000,
@@ -38,8 +40,12 @@ export default function DriverList({ onCreateClick }: DriverListProps) {
         </button>
       </div>
 
-      {isLoading && (
-        <p className="text-slate-500 text-sm">Loading drivers...</p>
+      {isLoading && <LoadingState label="Loading drivers..." />}
+      {isError && (
+        <ErrorState
+          message="Couldn't load drivers."
+          onRetry={() => refetch()}
+        />
       )}
 
       {drivers && drivers.length === 0 && (

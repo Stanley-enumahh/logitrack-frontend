@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/table";
 import Pagination from "../../components/ui/Pagination";
 import { useDebounce } from "../../hooks/useDebounce";
+import LoadingState from "@/components/ui/LoadingState";
+import ErrorState from "@/components/ui/ErrorState";
 
 interface OrderListProps {
   onOrderClick: (orderId: number) => void;
@@ -40,7 +42,7 @@ export default function OrderList({
 
   const PAGE_SIZE = 15;
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["orders", page, filter, debouncedSearch],
     queryFn: () => fetchOrders(page, filter, debouncedSearch),
   });
@@ -101,11 +103,12 @@ export default function OrderList({
           </div>
         </div>
 
-        {isLoading && (
-          <p className="text-slate-500 text-sm">Loading orders...</p>
-        )}
+        {isLoading && <LoadingState label="Loading orders..." />}
         {isError && (
-          <p className="text-red-600 text-sm">Couldn't load orders.</p>
+          <ErrorState
+            message="Couldn't load orders."
+            onRetry={() => refetch()}
+          />
         )}
 
         {orders && orders.length === 0 && (

@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { FiMapPin, FiChevronRight } from "react-icons/fi";
 import { fetchOrders } from "../../api/orders";
 import StatusBadge from "../../components/ui/StatusBadge";
+import LoadingState from "../../components/ui/LoadingState";
+import ErrorState from "../../components/ui/ErrorState";
 import type { Order, OrderStatus } from "../../types";
 
 interface DriverOrderListProps {
@@ -54,7 +56,7 @@ export default function DriverOrderList({
 }: DriverOrderListProps) {
   const [activeTab, setActiveTab] = useState<string>("assigned");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["orders", 1],
     queryFn: () => fetchOrders(1),
     refetchInterval: 10000,
@@ -115,9 +117,16 @@ export default function DriverOrderList({
         </div>
       </div>
 
-      {isLoading && <p className="text-slate-500 text-sm">Loading...</p>}
+      {isLoading && <LoadingState label="Loading deliveries..." />}
 
-      {!isLoading && (
+      {isError && (
+        <ErrorState
+          message="Couldn't load your deliveries."
+          onRetry={() => refetch()}
+        />
+      )}
+
+      {!isLoading && !isError && (
         <div className="space-y-2.5">
           {tabOrders.length === 0 && (
             <div className="border border-dashed border-slate-200 rounded-lg py-12 text-center">

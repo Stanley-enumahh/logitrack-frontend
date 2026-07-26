@@ -15,6 +15,8 @@ import { fetchDriverList } from "../../api/auth";
 import { fetchOrderEvents } from "../../api/tracking";
 import StatusBadge from "../../components/ui/StatusBadge";
 import Timeline from "../../components/ui/Timeline";
+import LoadingState from "../../components/ui/LoadingState";
+import ErrorState from "../../components/ui/ErrorState";
 import type { User } from "../../types";
 import ConfirmCancelOrderModal from "@/components/ui/ConfirmCancelOrderModal";
 
@@ -30,7 +32,12 @@ export default function OrderDetail({ orderId, onClose }: OrderDetailProps) {
 
   const [selectedDriverId, setSelectedDriverId] = useState<string>("");
 
-  const { data: order, isLoading } = useQuery({
+  const {
+    data: order,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["order", orderId],
     queryFn: () => fetchOrder(orderId),
   });
@@ -98,7 +105,20 @@ export default function OrderDetail({ orderId, onClose }: OrderDetailProps) {
           </button>
         </div>
 
-        {isLoading && <p className="p-6 text-sm text-slate-500">Loading...</p>}
+        {isLoading && (
+          <div className="px-6">
+            <LoadingState label="Loading order..." />
+          </div>
+        )}
+
+        {isError && (
+          <div className="px-6">
+            <ErrorState
+              message="Couldn't load this order."
+              onRetry={() => refetch()}
+            />
+          </div>
+        )}
 
         {order && (
           <div className="px-6 py-5 space-y-6">
