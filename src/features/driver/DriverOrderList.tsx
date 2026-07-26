@@ -93,12 +93,12 @@ export default function DriverOrderList({
           </span>
         </div>
 
-        <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1 w-fit overflow-x-auto">
+        <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1 max-w-full overflow-x-auto">
           {TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap shrink-0 transition-colors ${
                 activeTab === tab.key
                   ? "bg-white text-slate-900 shadow-sm"
                   : "text-slate-500 hover:text-slate-700"

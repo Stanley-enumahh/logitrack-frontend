@@ -1,10 +1,11 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useMutation } from "@tanstack/react-query";
 import { FiTruck, FiLock, FiUser } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
+import type { LoginPayload } from "../../api/auth";
 
 const schema = yup.object({
   username: yup.string().required("Username is required"),
@@ -16,8 +17,6 @@ type FormValues = yup.InferType<typeof schema>;
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -25,26 +24,28 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(schema) });
 
-  const onSubmit = async (values: FormValues) => {
-    setServerError(null);
-    setIsSubmitting(true);
-    try {
-      await login(values);
+  const loginMutation = useMutation({
+    mutationFn: (values: LoginPayload) => login(values),
+    onSuccess: () => {
       navigate("/dashboard");
-    } catch (err) {
-      const axiosError = err as {
-        response?: { status?: number; data?: { detail?: string[] | string } };
-      };
-      if (axiosError.response?.status === 429) {
-        setServerError(
-          "Too many login attempts. Please wait a minute and try again.",
-        );
-      } else {
-        const detail = axiosError.response?.data?.detail;
-        const message = Array.isArray(detail) ? detail[0] : detail;
-        setServerError(message ?? "Invalid username or password.");
-      }
+    },
+  });
+
+  const serverError = (() => {
+    if (!loginMutation.isError) return null;
+    const axiosError = loginMutation.error as {
+      response?: { status?: number; data?: { detail?: string[] | string } };
+    };
+    if (axiosError.response?.status === 429) {
+      return "Too many login attempts. Please wait a minute and try again.";
     }
+    const detail = axiosError.response?.data?.detail;
+    const message = Array.isArray(detail) ? detail[0] : detail;
+    return message ?? "Invalid username or password.";
+  })();
+
+  const onSubmit = (values: FormValues) => {
+    loginMutation.mutate(values);
   };
 
   return (
@@ -112,10 +113,10 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={loginMutation.isPending}
               className="w-full bg-slate-900 text-white text-sm cursor-pointer font-medium py-2.5 rounded-md hover:bg-slate-800 transition-colors disabled:opacity-50"
             >
-              {isSubmitting ? "Signing in..." : "Sign in"}
+              {loginMutation.isPending ? "Signing in..." : "Sign in"}
             </button>
           </form>
         </div>
