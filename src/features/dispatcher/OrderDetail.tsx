@@ -9,13 +9,14 @@ import {
   FiCopy,
   FiCheck,
 } from "react-icons/fi";
-import { fetchOrder, assignDriver } from "../../api/orders";
+import { fetchOrder, assignDriver, cancelOrder } from "../../api/orders";
 import { fetchDriverList } from "../../api/auth";
 
 import { fetchOrderEvents } from "../../api/tracking";
 import StatusBadge from "../../components/ui/StatusBadge";
 import Timeline from "../../components/ui/Timeline";
 import type { User } from "../../types";
+import ConfirmCancelOrderModal from "@/components/ui/onfirmCancelOrderModal";
 
 interface OrderDetailProps {
   orderId: number;
@@ -25,6 +26,7 @@ interface OrderDetailProps {
 export default function OrderDetail({ orderId, onClose }: OrderDetailProps) {
   const queryClient = useQueryClient();
   const [copied, setCopied] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const [selectedDriverId, setSelectedDriverId] = useState<string>("");
 
@@ -60,6 +62,18 @@ export default function OrderDetail({ orderId, onClose }: OrderDetailProps) {
       queryClient.invalidateQueries({ queryKey: ["order", orderId] });
       queryClient.invalidateQueries({ queryKey: ["order-events", orderId] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: () => cancelOrder(orderId, "Cancelled by dispatcher"),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order", orderId] });
+      queryClient.invalidateQueries({ queryKey: ["order-events", orderId] });
+
+      setShowCancelConfirm(false);
     },
   });
 
@@ -211,9 +225,28 @@ export default function OrderDetail({ orderId, onClose }: OrderDetailProps) {
               </p>
               {events && <Timeline events={events} />}
             </div>
+
+            {["pending", "assigned"].includes(order.status) && (
+              <div className="border-t border-slate-100 pt-4">
+                <button
+                  onClick={() => setShowCancelConfirm(true)}
+                  className="w-full rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+                >
+                  Cancel Order
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {showCancelConfirm && (
+        <ConfirmCancelOrderModal
+          isLoading={cancelMutation.isPending}
+          onCancel={() => setShowCancelConfirm(false)}
+          onConfirm={() => cancelMutation.mutate()}
+        />
+      )}
     </div>
   );
 }

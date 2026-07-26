@@ -139,3 +139,14 @@ export async function fetchOverview(): Promise<OverviewResponse> {
   const { data } = await apiClient.get<OverviewResponse>("/orders/overview/");
   return data;
 }
+
+
+export async function cancelOrder(
+  orderId: number,
+  note?: string,
+): Promise<Order> {
+  return updateOrderStatus(orderId, {
+    status: "cancelled",
+    note,
+  });
+}

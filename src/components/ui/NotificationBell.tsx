@@ -16,6 +16,7 @@ import {
   type NotificationType,
 } from "../../api/notifications";
 import { getRelativeTime } from "../../hooks/useRelativeTime";
+import { MdOutlineCancel } from "react-icons/md";
 
 const TYPE_CONFIG: Record<
   NotificationType,
@@ -25,6 +26,7 @@ const TYPE_CONFIG: Record<
   delivered: { icon: FiCheckCircle, color: "#00A979" },
   failed: { icon: FiXCircle, color: "#F82019" },
   urgent: { icon: FiAlertTriangle, color: "#E49E22" },
+  cancelled: { icon: MdOutlineCancel, color: "#F82019" },
 };
 
 export default function NotificationBell() {
