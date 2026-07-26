@@ -85,6 +85,9 @@ export interface PublicTrackingData {
   order_number: string;
   status: OrderStatus;
   customer_name: string;
+  customer_phone: string;
+  receiver_name: string;
+  receiver_phone: string;
   pickup_address: string;
   pickup_latitude: string;
   pickup_longitude: string;
