@@ -1,3 +1,7 @@
+interface GeolocationErrorWithCode extends Error {
+  code?: number;
+}
+
 export function getCurrentPosition(): Promise<{
   latitude: number;
   longitude: number;
@@ -14,8 +18,33 @@ export function getCurrentPosition(): Promise<{
           longitude: position.coords.longitude,
         });
       },
-      () => reject(new Error("Location permission denied.")),
-      { enableHighAccuracy: true },
+      (error) => {
+        console.error("Geolocation error:", error.code, error.message);
+
+        let message: string;
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            message = "Location permission denied.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            message = "Location information is unavailable.";
+            break;
+          case error.TIMEOUT:
+            message = "Location request timed out.";
+            break;
+          default:
+            message = "Could not determine your location.";
+        }
+
+        const err: GeolocationErrorWithCode = new Error(message);
+        err.code = error.code;
+        reject(err);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0,
+      },
     );
   });
 }
