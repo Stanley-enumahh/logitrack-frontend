@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
@@ -102,12 +102,12 @@ export default function PublicTrackingPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="bg-slate-900 px-4 py-5">
-        <div className="max-w-5xl mx-auto flex items-center gap-2">
+        <Link to="/" className="max-w-5xl mx-auto flex items-center gap-2">
           <FiTruck className="text-amber-500 w-5 h-5" />
           <span className="text-white font-semibold tracking-tight">
             LogiTrack
           </span>
-        </div>
+        </Link>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-6 space-y-5">
