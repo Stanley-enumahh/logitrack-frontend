@@ -263,12 +263,17 @@ export default function DriverOrderDetail({
       queryClient.invalidateQueries({ queryKey: ["order-events", orderId] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error: Error & { code?: number }) => {
+    onError: (
+      error: Error & {
+        code?: number;
+        response?: { data?: { detail?: string }; status?: number };
+      },
+    ) => {
       setLocationError(
         "Could not get your location. Enable location access and try again.",
       );
       setLocationDebug(
-        `code: ${error.code ?? "n/a"} — message: ${error.message} — secure context: ${window.isSecureContext} — protocol: ${window.location.protocol}`,
+        `status: ${error.response?.status ?? "n/a"} — detail: ${JSON.stringify(error.response?.data) ?? error.message}`,
       );
     },
   });
